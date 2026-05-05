@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verus CS</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0A1628;
+  --surface:   #0F1F3D;
+  --surface2:  #162440;
+  --border:    #1E3256;
+  --border2:   #254070;
+  --text:      #E8F0FF;
+  --text2:     #8AAAD4;
+  --text3:     #4D6A96;
+  --accent:    #4D8EFF;
+  --accent-bg: #0D1F42;
+  --green:     #34D399;
+  --green-bg:  #062818;
+  --amber:     #FBBF24;
+  --amber-bg:  #1C1500;
+  --red:       #F87171;
+  --red-bg:    #1C0808;
+  --r:         12px;
+  --r-sm:      8px;
+  --shadow:    0 1px 3px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.2);
+  --shadow-md: 0 4px 24px rgba(0,0,0,.4), 0 12px 48px rgba(0,0,0,.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Figtree', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── LOGIN ── */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #dce8ff 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.login-brand h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.4rem;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.login-brand p {
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 400;
+}
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.login-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--surface2);
+  border-radius: var(--r-sm);
+  padding: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.login-tab {
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  font-family: 'Figtree', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.login-tab.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+
+.form-group { margin-bottom: 14px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'Figtree', sans-serif;
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s;
+}
+.form-input:focus { border-color: var(--accent); }
+
+.btn-full {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: white;
+  font-family: 'Figtree', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .15s;
+  margin-top: 4px;
+}
+.btn-full:hover { opacity: .85; }
+
+.login-error {
+  font-size: 12px;
+  color: var(--red);
+  text-align: center;
+  margin-top: 10px;
+  display: none;
+}
+
+/* ── APP ── */
+.app { display: none; min-height: 100vh; flex-direction: column; }
+.app.active { display: flex; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.topbar-brand {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  color: var(--text);
+}
+
+.topbar-role {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.role-gerente   { background: var(--text); color: white; }
+.role-funcionaria { background: var(--accent-bg); color: var(--accent); }
+
+.topbar-user {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+.topbar-time {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: monospace;
+}
+
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+.btn-logout {
+  padding: 6px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: none;
+  font-family: 'Figtree', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all .15s;
+}
+.btn-logout:hover { border-color: var(--text); color: var(--text); }
+
+/* ── NAV TABS ── */
+.nav-tabs {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  display: flex;
+  gap: 0;
+}
+
+.nav-tab {
+  padding: 13px 16px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: none;
+  color: var(--text2);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all .15s;
+}
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+/* ── CONTENT ── */
+.content {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── STAT GRID ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.stat-val {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.2rem;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* ── PAGE TITLE ── */
+.page-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 1.5rem 0 0.75rem;
+}
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px;
+  letter-spacing: 0.2px;
+}
+.badge-red    { background: var(--red-bg);   color: var(--red); }
+.badge-amber  { background: var(--amber-bg); color: var(--amber); }
+.badge-green  { background: var(--green-bg); color: var(--green); }
+.badge-blue   { background: var(--accent-bg); color: var(--accent); }
+.badge-gray   { background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
+
+/* ── CHECKLIST ── */
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .1s;
+}
+.check-item:last-child { border-bottom: none; padding-bottom: 0; }
+.check-item:first-child { padding-top: 0; }
+.check-item:hover { background: var(--bg); border-radius: 6px; padding-left: 6px; }
+
+.check-box {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 2px solid var(--border2);
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.check-box.done { background: var(--green); border-color: var(--green); }
+.check-box.done::after { content: '✓'; color: white; font-size: 11px; font-weight: 800; }
+
+.check-text { font-size: 14px; font-weight: 500; line-height: 1.4; }
+.check-text.done { color: var(--text3); text-decoration: line-through; font-weight: 400; }
+.check-note { font-size: 12px; color: var(--text3); margin-top: 3px; line-height: 1.4; }
+.check-ts { font-size: 10px; color: var(--accent); margin-top: 4px; font-weight: 600; font-family: monospace; }
+
+/* ── PROGRESS ── */
+.prog-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+.prog-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+
+/* ── STAFF ROW ── */
+.staff-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.staff-row:last-child { border-bottom: none; padding-bottom: 0; }
+.staff-row:first-child { padding-top: 0; }
+
+.staff-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--accent); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; flex-shrink: 0;
+}
+
+.staff-info { flex: 1; min-width: 0; }
+.staff-name { font-size: 15px; font-weight: 700; }
+.staff-sub { font-size: 12px; color: var(--text2); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* ── TIMELINE ── */
+.tl-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 5px; }
+.tl-time { font-size: 10px; color: var(--text3); font-family: monospace; margin-top: 3px; }
+
+/* ── CONTACT ROW ── */
+.contact-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.contact-row:last-child { border-bottom: none; }
+
+/* ── BTN ── */
+.btn {
+  padding: 9px 18px;
+  border-radius: var(--r-sm);
+  font-family: 'Figtree', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; border: 1.5px solid transparent;
+  transition: all .15s;
+}
+.btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-primary:hover { opacity: .85; }
+.btn-secondary { background: none; border-color: var(--border2); color: var(--text2); }
+.btn-secondary:hover { border-color: var(--text); color: var(--text); }
+.btn-accent { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-accent:hover { opacity: .9; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-danger { border-color: var(--red-bg); color: var(--red); background: none; }
+.btn-danger:hover { background: var(--red-bg); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.3); z-index: 200;
+  align-items: center; justify-content: center; padding: 1rem;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.75rem;
+  width: 100%; max-width: 500px;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: var(--shadow-md);
+}
+.modal-title { font-family: 'Instrument Serif', serif; font-size: 1.2rem; margin-bottom: 1rem; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; }
+
+.form-select, .form-textarea {
+  width: 100%; padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: var(--r-sm);
+  font-family: 'Figtree', sans-serif; font-size: 14px;
+  background: var(--surface); color: var(--text);
+  outline: none; transition: border-color .15s;
+}
+.form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+/* ── ALERT BOX ── */
+.alert-box {
+  padding: 12px 16px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 500;
+}
+.alert-box.warn { background: var(--amber-bg); color: var(--amber); border: 1px solid #f5a62330; }
+.alert-box.success { background: var(--green-bg); color: var(--green); border: 1px solid #1a7a4a30; }
+.alert-box.info { background: var(--accent-bg); color: var(--accent); border: 1px solid #2d5be330; }
+
+/* ── EMPTY ── */
+.empty { text-align: center; padding: 2rem; font-size: 13px; color: var(--text3); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .content { padding: 1rem; }
+  .topbar { padding: 0 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ LOGIN PAGE -->
+<div id="loginPage" style="display:flex;min-height:100vh;align-items:center;justify-content:center;padding:2rem;background:var(--bg);position:relative;overflow:hidden">
+  <div style="position:absolute;top:-150px;right:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,#1a3a7a 0%,transparent 70%);pointer-events:none"></div>
+  <div style="position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,#0d2a5e 0%,transparent 70%);pointer-events:none"></div>
+
+  <div style="width:100%;max-width:400px;position:relative;z-index:1">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <h1 style="font-family:'Instrument Serif',serif;font-size:2.6rem;color:var(--text);line-height:1;margin-bottom:8px">Verus <em>CS</em></h1>
+      <p style="font-size:13px;color:var(--text3)">Sistema de Sucesso do Cliente</p>
+    </div>
+
+    <div class="login-card">
+      <div class="login-tabs">
+        <button class="login-tab active" id="tabGerente" onclick="switchLoginTab('gerente')">👑 Gerente</button>
+        <button class="login-tab" id="tabFuncionaria" onclick="switchLoginTab('funcionaria')">👩‍💼 Funcionária</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Usuário</label>
+        <input class="form-input" id="loginUser" placeholder="seu usuário" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input class="form-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn-full" onclick="doLogin()">Entrar</button>
+      <div class="login-error" id="loginError">Usuário ou senha incorretos.</div>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:1.5rem">
+      Primeiro acesso? Use as credenciais padrão ou configure em Gerenciar.
+    </p>
+    <p style="text-align:center;margin-top:8px">
+      <button onclick="resetCS()" style="background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;text-decoration:underline;font-family:'Figtree',sans-serif">Redefinir dados e voltar ao padrão</button>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ GERENTE APP -->
+<div id="gerenteApp" class="app">
+  <div class="topbar">
+    <div class="topbar-brand">Verus CS</div>
+    <span class="topbar-role role-gerente">Gerente</span>
+    <span class="topbar-user" id="gerenteUserName"></span>
+    <div class="topbar-right">
+      <span class="topbar-time" id="clockG"></span>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="gerenteTab('visao',this)">Visão Geral</button>
+    <button class="nav-tab" onclick="gerenteTab('rotinas',this)">Rotinas</button>
+    <button class="nav-tab" onclick="gerenteTab('contatos',this)">Contatos</button>
+    <button class="nav-tab" onclick="gerenteTab('configurar',this)">Configurar</button>
+  </div>
+  <div class="content" id="gerenteContent"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ FUNCIONÁRIA APP -->
+<div id="funcApp" class="app">
+  <div class="topbar">
+    <div class="topbar-brand">Verus CS</div>
+    <span class="topbar-role role-funcionaria">Funcionária</span>
+    <span class="topbar-user" id="funcUserName"></span>
+    <div class="topbar-right">
+      <span class="topbar-time" id="clockF"></span>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="funcTab('rotina',this)">Minha Rotina</button>
+    <button class="nav-tab" onclick="funcTab('mentoradas',this)">Mentoradas</button>
+    <button class="nav-tab" onclick="funcTab('contatos',this)">Meus Contatos</button>
+  </div>
+  <div class="content" id="funcContent"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle"></div>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════ DATA
+const APP_KEY = 'mentoria_app_v1';
+const CS_KEY  = 'verus_cs_v2';
+
+// ── SUPABASE CONFIG ───────────────────────────────────────────────────────────
+const SB_URL = 'https://bmywcotwrsrrebgapzwl.supabase.co';
+const SB_KEY = 'sb_publishable_U254aN-HoTqubWihBhwksA_t_IkEF7w';
+const SB_HEADERS = {'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+
+function sbGetCS(){
+  return fetch(SB_URL+'/rest/v1/cs_data?id=eq.main&select=data',{headers:SB_HEADERS})
+    .then(function(r){return r.json();})
+    .then(function(rows){return rows && rows[0] ? rows[0].data : null;});
+}
+
+function sbPutCS(data){
+  return fetch(SB_URL+'/rest/v1/cs_data?id=eq.main',{
+    method:'PATCH',
+    headers:Object.assign({},SB_HEADERS,{'Prefer':'return=minimal'}),
+    body:JSON.stringify({data:data, updated_at: new Date().toISOString()})
+  });
+}
+
+function sbGetApp(){
+  return fetch(SB_URL+'/rest/v1/app_data?id=eq.main&select=data',{headers:SB_HEADERS})
+    .then(function(r){return r.json();})
+    .then(function(rows){return rows && rows[0] ? rows[0].data : null;});
+}
+
+const DEFAULT_DATA = {
+  credentials: {
+    gerente: { user:'gerente', pass:'verus2024', nome:'Gerente' },
+    func1:   { user:'func1',   pass:'cs123',    nome:'Funcionária 1' },
+    func2:   { user:'func2',   pass:'cs123',    nome:'Funcionária 2' },
+  },
+  contatos: {},   // { mid: [{id,data,hora,tipo,nota,autorId,autorNome}] }
+  checklist: {},  // { semana: { autorId: { itemId: {done,timestamp} } } }
+};
+
+let CS   = loadCS();
+let APP  = loadApp();
+let currentUser = null;   // { role, id, nome }
+let currentGerenteTab = 'visao';
+let currentFuncTab = 'rotina';
+let loginRole = 'gerente';
+
+function loadCS(){
+  try {
+    const r = localStorage.getItem(CS_KEY);
+    if(!r) return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    const saved = JSON.parse(r);
+    if(!saved.credentials) saved.credentials = JSON.parse(JSON.stringify(DEFAULT_DATA.credentials));
+    if(!saved.credentials.gerente) saved.credentials.gerente = DEFAULT_DATA.credentials.gerente;
+    if(!saved.contatos) saved.contatos = {};
+    if(!saved.checklist) saved.checklist = {};
+    return saved;
+  } catch(e){ return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+}
+
+function loadApp(){
+  try { return JSON.parse(localStorage.getItem(APP_KEY)) || null; }
+  catch(e){ return null; }
+}
+
+function saveCS(){
+  try { localStorage.setItem(CS_KEY, JSON.stringify(CS)); } catch(e){}
+  sbPutCS(CS).catch(function(e){ console.warn('CS save falhou:', e); });
+}
+
+function initAppFromSupabase(callback){
+  // Carrega APP (dados das alunas) do Supabase
+  sbGetApp().then(function(cloudApp){
+    if(cloudApp && cloudApp.mentees){
+      APP = cloudApp;
+      localStorage.setItem(APP_KEY, JSON.stringify(APP));
+    }
+    // Carrega CS do Supabase
+    return sbGetCS();
+  }).then(function(cloudCS){
+    if(cloudCS && cloudCS.credentials){
+      CS = cloudCS;
+      localStorage.setItem(CS_KEY, JSON.stringify(CS));
+    }
+    callback();
+  }).catch(function(e){
+    console.warn('Supabase erro, usando localStorage:', e);
+    callback();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════ HELPERS
+function today(){ return new Date().toISOString().split('T')[0]; }
+function nowTS(){
+  const n = new Date();
+  return {
+    data: today(),
+    hora: n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    iso: n.toISOString()
+  };
+}
+function semanaKey(){
+  const d = new Date();
+  const jan1 = new Date(d.getFullYear(),0,1);
+  const w = Math.ceil(((d-jan1)/86400000+jan1.getDay()+1)/7);
+  return `${d.getFullYear()}-W${String(w).padStart(2,'0')}`;
+}
+function semanaLabel(wk){
+  // Calcula datas da semana a partir da chave
+  const [yr, wn] = wk.split('-W').map(Number);
+  const jan1 = new Date(yr,0,1);
+  const d = new Date(jan1.getTime() + (wn-1)*7*86400000);
+  const seg = new Date(d); seg.setDate(d.getDate()-d.getDay()+1);
+  const sex = new Date(seg); sex.setDate(seg.getDate()+4);
+  return `${seg.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} – ${sex.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}`;
+}
+function diasDesde(dateStr){
+  if(!dateStr) return 999;
+  return Math.floor((new Date()-new Date(dateStr+'T12:00:00'))/86400000);
+}
+function initials(name){ return (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function uid(){ return '_'+Math.random().toString(36).slice(2,9); }
+function getMentees(){ return APP?.mentees || []; }
+function pct(id){
+  if(!APP) return 0;
+  const p=(APP.plans||{})[id]||[];
+  if(!p.length) return 0;
+  return Math.round(p.filter(x=>x.done).length/p.length*100);
+}
+function vencidas(id){
+  if(!APP) return [];
+  return ((APP.plans||{})[id]||[]).filter(a=>!a.done&&a.due<today());
+}
+function calcPriority(m){
+  const v=vencidas(m.id).length;
+  const p=pct(m.id);
+  const uc=getUltimoContato(m.id);
+  const dias=diasDesde(uc);
+  if(v>=3||dias>14) return 'high';
+  if(v>=1||dias>7||p<30) return 'medium';
+  return 'low';
+}
+function priorityBadge(p){
+  return {
+    high:`<span class="badge badge-red">🔴 Urgente</span>`,
+    medium:`<span class="badge badge-amber">🟡 Monitorar</span>`,
+    low:`<span class="badge badge-green">🟢 Em dia</span>`,
+  }[p]||'';
+}
+function avatarEl(m, size=38){
+  if(m?.photo) return `<img src="${m.photo}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;flex-shrink:0" alt="">`;
+  const bg=m?.level===2?'#1A1040':'#082033';
+  const cl=m?.level===2?'#A78BFA':'#38BDF8';
+  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};color:${cl};display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.32)}px;font-weight:800;flex-shrink:0">${initials(m?.name)}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════ CONTATOS
+function getContatos(mid){ return (CS.contatos||{})[mid]||[]; }
+function getUltimoContato(mid){
+  const cs=getContatos(mid);
+  if(!cs.length) return null;
+  return cs.sort((a,b)=>b.iso.localeCompare(a.iso))[0].data;
+}
+function addContato(mid, tipo, nota){
+  if(!CS.contatos) CS.contatos={};
+  if(!CS.contatos[mid]) CS.contatos[mid]=[];
+  const ts=nowTS();
+  CS.contatos[mid].push({
+    id: uid(), data: ts.data, hora: ts.hora, iso: ts.iso,
+    tipo, nota,
+    autorId: currentUser.id,
+    autorNome: currentUser.nome
+  });
+  saveCS();
+}
+
+// ═══════════════════════════════════════════════════════════════ CHECKLIST
+const CHECKLIST = [
+  { id:'ck1', grupo:'📋 Verificação', texto:'Conferir ações vencidas de todas as mentoradas',      nota:'Identificar quem está travada e precisa de intervenção direta' },
+  { id:'ck2', grupo:'📋 Verificação', texto:'Verificar progresso geral — houve avanço esta semana?', nota:'Comparar com a semana anterior e registrar observações' },
+  { id:'ck3', grupo:'💬 Contato',     texto:'Contatar mentoradas em alerta 🔴 Urgente',              nota:'WhatsApp, e-mail ou ligação — registrar o contato após' },
+  { id:'ck4', grupo:'💬 Contato',     texto:'Fazer check-in com mentoradas 🟡 Monitorar',            nota:'Mensagem de verificação — perguntar como está indo o plano' },
+  { id:'ck5', grupo:'💬 Contato',     texto:'Enviar mensagem de incentivo para mentoradas 🟢 Em dia', nota:'Reconhecer o progresso e manter o engajamento positivo' },
+  { id:'ck6', grupo:'📝 Registro',    texto:'Registrar todos os contatos feitos esta semana',        nota:'Importante para o histórico e para o relatório da gerente' },
+  { id:'ck7', grupo:'📊 Relatório',   texto:'Revisar painel e identificar tendências preocupantes',  nota:'Há mentoradas com queda de progresso consecutiva?' },
+  { id:'ck8', grupo:'📊 Relatório',   texto:'Sinalizar à gerente casos que precisam de intervenção', nota:'Enviar resumo dos pontos de atenção da semana' },
+];
+
+function getCheckSemana(autorId){
+  const wk=semanaKey();
+  return ((CS.checklist||{})[wk]||{})[autorId]||{};
+}
+
+function toggleCheck(itemId){
+  const wk=semanaKey();
+  if(!CS.checklist) CS.checklist={};
+  if(!CS.checklist[wk]) CS.checklist[wk]={};
+  if(!CS.checklist[wk][currentUser.id]) CS.checklist[wk][currentUser.id]={};
+  const cur=CS.checklist[wk][currentUser.id][itemId];
+  if(cur){
+    CS.checklist[wk][currentUser.id][itemId]=null;
+  } else {
+    const ts=nowTS();
+    CS.checklist[wk][currentUser.id][itemId]={ done:true, data:ts.data, hora:ts.hora, iso:ts.iso };
+  }
+  saveCS();
+  renderFunc();
+}
+
+function getStaffList(){
+  const creds=CS.credentials||{};
+  return Object.entries(creds)
+    .filter(([k])=>k!=='gerente')
+    .map(([k,v])=>({id:k, nome:v.nome, user:v.user}));
+}
+
+// ═══════════════════════════════════════════════════════════════ AUTH
+let loginRoleSelected = 'gerente';
+
+function switchLoginTab(role){
+  loginRoleSelected = role;
+  document.getElementById('tabGerente').classList.toggle('active', role==='gerente');
+  document.getElementById('tabFuncionaria').classList.toggle('active', role==='funcionaria');
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginError').style.display='none';
+  document.getElementById('loginUser').focus();
+}
+
+function resetCS(){
+  if(!confirm('Isso vai apagar todos os registros de contatos e checklist e voltar as credenciais ao padrão. Continuar?')) return;
+  localStorage.removeItem(CS_KEY);
+  CS = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  alert('✅ Dados redefinidos!\n\nGerente: gerente / verus2024\nFuncionária 1: func1 / cs123\nFuncionária 2: func2 / cs123');
+}
+
+function doLogin(){
+  const user=document.getElementById('loginUser').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value.trim();
+  const creds=CS.credentials||{};
+
+  if(loginRoleSelected==='gerente'){
+    const mc=creds.gerente||{};
+    if(user===(mc.user||'gerente').toLowerCase() && pass===mc.pass){
+      loginAs({role:'gerente', id:'gerente', nome: mc.nome||'Gerente'});
+      return;
+    }
+  } else {
+    for(const [k,v] of Object.entries(creds)){
+      if(k==='gerente') continue;
+      if(user===v.user.toLowerCase() && pass===v.pass){
+        loginAs({role:'funcionaria', id:k, nome:v.nome});
+        return;
+      }
+    }
+  }
+
+  const err=document.getElementById('loginError');
+  err.textContent='Usuário ou senha incorretos.';
+  err.style.display='block';
+  document.getElementById('loginPass').value='';
+}
+
+function loginAs(who){
+  currentUser=who;
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('loginError').style.display='none';
+
+  if(who.role==='gerente'){
+    document.getElementById('gerenteApp').classList.add('active');
+    document.getElementById('gerenteUserName').textContent=who.nome;
+    renderGerente();
+  } else {
+    document.getElementById('funcApp').classList.add('active');
+    document.getElementById('funcUserName').textContent=who.nome;
+    renderFunc();
+  }
+}
+
+function logout(){
+  currentUser=null;
+  document.querySelectorAll('.app').forEach(a=>a.classList.remove('active'));
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginError').style.display='none';
+}
+
+// ═══════════════════════════════════════════════════════════════ CLOCK
+function startClock(){
+  const tick=()=>{
+    const t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const cg=document.getElementById('clockG');
+    const cf=document.getElementById('clockF');
+    if(cg) cg.textContent=t;
+    if(cf) cf.textContent=t;
+  };
+  tick(); setInterval(tick,1000);
+}
+
+// ═══════════════════════════════════════════════════════════════ GERENTE VIEWS
+function gerenteTab(tab, el){
+  currentGerenteTab=tab;
+  document.querySelectorAll('#gerenteApp .nav-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderGerente();
+}
+
+function renderGerente(){
+  const el=document.getElementById('gerenteContent');
+  if(currentGerenteTab==='visao') el.innerHTML=renderGerenteVisao();
+  else if(currentGerenteTab==='rotinas') el.innerHTML=renderGerenteRotinas();
+  else if(currentGerenteTab==='contatos') el.innerHTML=renderGerenteContatos();
+  else if(currentGerenteTab==='configurar') el.innerHTML=renderConfigurar();
+}
+
+// ── Visão Geral ──
+function renderGerenteVisao(){
+  const staff=getStaffList();
+  const mentees=getMentees();
+  const wk=semanaKey();
+  const total=CHECKLIST.length;
+
+  const staffStatus = staff.map(s=>{
+    const checks=(CS.checklist?.[wk]||{})[s.id]||{};
+    const done=CHECKLIST.filter(c=>checks[c.id]?.done).length;
+    const lastActivity = CHECKLIST
+      .map(c=>checks[c.id]?.iso).filter(Boolean)
+      .sort((a,b)=>b.localeCompare(a))[0];
+    return {s, done, total, lastActivity};
+  });
+
+  const allUrgent=mentees.filter(m=>calcPriority(m)==='high').length;
+  const totalContatos=Object.values(CS.contatos||{}).flat().length;
+  const contatosHoje=Object.values(CS.contatos||{}).flat().filter(c=>c.data===today()).length;
+
+  return `
+<div class="page-title">Visão Geral</div>
+
+<div class="stat-grid">
+  <div class="stat">
+    <div class="stat-val" style="color:var(--red)">${allUrgent}</div>
+    <div class="stat-label">Mentoradas urgentes</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" style="color:var(--accent)">${contatosHoje}</div>
+    <div class="stat-label">Contatos hoje</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">${totalContatos}</div>
+    <div class="stat-label">Total de contatos</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">${mentees.length}</div>
+    <div class="stat-label">Mentoradas</div>
+  </div>
+</div>
+
+<div class="section-label">Status da rotina semanal — ${semanaLabel(wk)}</div>
+<div class="card">
+  ${staff.length===0?'<div class="empty">Nenhuma funcionária cadastrada.</div>':''}
+  ${staffStatus.map(({s,done,total,lastActivity})=>{
+    const p=Math.round(done/total*100);
+    const color=p===100?'var(--green)':p>=50?'var(--accent)':'var(--amber)';
+    const lastDt=lastActivity?new Date(lastActivity).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+    return `<div class="staff-row">
+      <div class="staff-avatar">${initials(s.nome)}</div>
+      <div class="staff-info">
+        <div class="staff-name">${s.nome}</div>
+        <div class="staff-sub">
+          <span style="color:${color};font-weight:700">${done}/${total} itens</span>
+          ${lastActivity?`<span>· última atividade: <strong>${lastDt}</strong></span>`:'<span style="color:var(--text3)">· nenhuma atividade ainda esta semana</span>'}
+        </div>
+        <div style="margin-top:8px">
+          <div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${color}"></div></div>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:'Instrument Serif',serif;font-size:1.8rem;color:${color};line-height:1">${p}%</div>
+        ${p===100?'<span class="badge badge-green" style="font-size:10px">✓ Completo</span>':p===0?'<span class="badge badge-red" style="font-size:10px">Pendente</span>':'<span class="badge badge-amber" style="font-size:10px">Em andamento</span>'}
+      </div>
+    </div>`;
+  }).join('')}
+</div>
+
+${!APP?`<div class="alert-box info">ℹ️ App Mentoria Verus não conectado. Abra este arquivo no mesmo navegador do app principal.</div>`:''}
+
+<div class="section-label">Mentoradas que precisam de atenção agora</div>
+<div class="card">
+  ${mentees.filter(m=>calcPriority(m)==='high').length===0
+    ? '<div class="empty">✅ Nenhuma mentorada em situação urgente.</div>'
+    : mentees.filter(m=>calcPriority(m)==='high').map(m=>{
+        const v=vencidas(m.id);
+        const dias=diasDesde(getUltimoContato(m.id));
+        return `<div class="staff-row" style="gap:10px">
+          ${avatarEl(m)}
+          <div class="staff-info">
+            <div class="staff-name">${m.name}</div>
+            <div class="staff-sub">
+              ${v.length?`<span style="color:var(--red)">${v.length} ação${v.length>1?'ões':''} vencida${v.length>1?'s':''}</span>`:''}
+              <span>· ${dias<999?`sem contato há ${dias===0?'hoje':dias+' dias'}`:'nunca contatada'}</span>
+            </div>
+          </div>
+          ${priorityBadge('high')}
+        </div>`;
+      }).join('')}
+</div>`;
+}
+
+// ── Rotinas detalhadas ──
+function renderGerenteRotinas(){
+  const staff=getStaffList();
+  const wk=semanaKey();
+
+  // Histórico de semanas (última 4)
+  const semanas=[];
+  for(let i=0;i<4;i++){
+    const d=new Date(); d.setDate(d.getDate()-i*7);
+    const jan1=new Date(d.getFullYear(),0,1);
+    const w=Math.ceil(((d-jan1)/86400000+jan1.getDay()+1)/7);
+    semanas.push(`${d.getFullYear()}-W${String(w).padStart(2,'0')}`);
+  }
+
+  return `
+<div class="page-title">Rotinas por Funcionária</div>
+
+${staff.map(s=>{
+  return `<div class="section-label">${s.nome}</div>
+  <div class="card">
+    ${semanas.map((wkk,wi)=>{
+      const checks=(CS.checklist?.[wkk]||{})[s.id]||{};
+      const done=CHECKLIST.filter(c=>checks[c.id]?.done).length;
+      const p=Math.round(done/CHECKLIST.length*100);
+      const isCurrentWeek=wkk===wk;
+      const color=p===100?'var(--green)':p>=50?'var(--accent)':p>0?'var(--amber)':'var(--text3)';
+      return `<div style="margin-bottom:${wi<semanas.length-1?'1rem':'0'}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="font-size:13px;font-weight:600">${semanaLabel(wkk)}${isCurrentWeek?' <span class="badge badge-blue" style="font-size:10px;margin-left:6px">Atual</span>':''}</div>
+          <div style="font-size:13px;font-weight:700;color:${color}">${done}/${CHECKLIST.length} — ${p}%</div>
+        </div>
+        <div class="prog-bar" style="margin-bottom:${done>0?'8px':'0'}">
+          <div class="prog-fill" style="width:${p}%;background:${color}"></div>
+        </div>
+        ${done>0?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
+          ${CHECKLIST.map(c=>{
+            const item=checks[c.id];
+            if(!item?.done) return '';
+            return `<div style="font-size:11px;background:var(--green-bg);color:var(--green);border-radius:4px;padding:2px 8px;display:flex;align-items:center;gap:4px">
+              <span>✓</span> <span>${c.texto.substring(0,35)}${c.texto.length>35?'...':''}</span>
+              <span style="opacity:.6;margin-left:2px">${item.hora}</span>
+            </div>`;
+          }).join('')}
+        </div>`:''}
+        ${done===0&&!isCurrentWeek?`<div style="font-size:12px;color:var(--text3)">Nenhum item registrado nesta semana.</div>`:''}
+      </div>`;
+    }).join('<hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">')}
+  </div>`;
+}).join('')}
+
+${staff.length===0?`<div class="card"><div class="empty">Nenhuma funcionária cadastrada. Configure em <strong>Configurar</strong>.</div></div>`:''}`;
+}
+
+// ── Contatos (gerente) ──
+function renderGerenteContatos(){
+  const todos=Object.entries(CS.contatos||{}).flatMap(([mid,cs])=>{
+    const m=getMentees().find(x=>x.id===mid);
+    return cs.map(c=>({...c,mentee:m}));
+  }).sort((a,b)=>b.iso.localeCompare(a.iso));
+
+  const porAutor={};
+  todos.forEach(c=>{
+    if(!porAutor[c.autorNome]) porAutor[c.autorNome]=[];
+    porAutor[c.autorNome].push(c);
+  });
+
+  return `
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+  <div class="page-title" style="margin:0">Todos os Contatos</div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat"><div class="stat-val">${todos.length}</div><div class="stat-label">Total</div></div>
+  <div class="stat"><div class="stat-val" style="color:var(--accent)">${todos.filter(c=>c.data===today()).length}</div><div class="stat-label">Hoje</div></div>
+  <div class="stat"><div class="stat-val">${Object.keys(porAutor).length}</div><div class="stat-label">Funcionárias ativas</div></div>
+</div>
+
+${Object.entries(porAutor).map(([autor,cs])=>`
+  <div class="section-label">${autor} — ${cs.length} contato${cs.length>1?'s':''}</div>
+  <div class="card">
+    ${cs.slice(0,20).map(c=>`
+    <div class="contact-row">
+      <div style="flex-shrink:0;margin-top:2px">${avatarEl(c.mentee,32)}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-weight:700;font-size:13px">${c.mentee?.name||'?'}</span>
+          <span class="badge badge-gray">${c.tipo}</span>
+          <span style="font-size:11px;color:var(--text3);font-family:monospace">${c.data} às ${c.hora}</span>
+        </div>
+        ${c.nota?`<div style="font-size:13px;color:var(--text2);margin-top:5px;line-height:1.5">${c.nota}</div>`:'<div style="font-size:12px;color:var(--text3);margin-top:3px;font-style:italic">Sem anotações</div>'}
+      </div>
+    </div>`).join('')}
+    ${cs.length>20?`<div style="text-align:center;font-size:12px;color:var(--text3);padding:8px">+ ${cs.length-20} contatos anteriores</div>`:''}
+  </div>`).join('')}
+
+${todos.length===0?`<div class="card"><div class="empty">Nenhum contato registrado ainda.</div></div>`:''}`;
+}
+
+// ── Configurar ──
+function renderConfigurar(){
+  const creds=CS.credentials||{};
+  const mc=creds.gerente||{user:'gerente',pass:'verus2024',nome:'Gerente'};
+  const staff=getStaffList();
+
+  return `
+<div class="page-title">Configurar</div>
+
+<div class="section-label">Credenciais da gerente</div>
+<div class="card">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <div class="form-group" style="margin:0">
+      <label class="form-label">Nome</label>
+      <input class="form-input" id="cfg_gNome" value="${mc.nome||''}" placeholder="Seu nome">
+    </div>
+    <div class="form-group" style="margin:0">
+      <label class="form-label">Usuário</label>
+      <input class="form-input" id="cfg_gUser" value="${mc.user||'gerente'}">
+    </div>
+    <div class="form-group" style="margin:0">
+      <label class="form-label">Senha</label>
+      <input class="form-input" id="cfg_gPass" value="${mc.pass||''}" type="password">
+    </div>
+  </div>
+  <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="salvarGerenteCreds()">Salvar</button>
+</div>
+
+<div class="section-label">Funcionárias</div>
+<div class="card">
+  <div class="card-title">Adicionar funcionária</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+    <div class="form-group" style="margin:0">
+      <label class="form-label">Nome</label>
+      <input class="form-input" id="nf_nome" placeholder="Nome da funcionária">
+    </div>
+    <div class="form-group" style="margin:0">
+      <label class="form-label">Usuário</label>
+      <input class="form-input" id="nf_user" placeholder="Ex: ana">
+    </div>
+    <div class="form-group" style="margin:0">
+      <label class="form-label">Senha</label>
+      <input class="form-input" id="nf_pass" placeholder="Ex: ana123">
+    </div>
+  </div>
+  <button class="btn btn-accent btn-sm" onclick="addFuncionaria()">+ Adicionar</button>
+
+  ${staff.length>0?`<hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+  ${staff.map(s=>{
+    const c=creds[s.id]||{};
+    return `<div class="staff-row">
+      <div class="staff-avatar">${initials(s.nome)}</div>
+      <div class="staff-info">
+        <div class="staff-name">${s.nome}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+          <div>
+            <label class="form-label">Usuário</label>
+            <input class="form-input" id="eu_${s.id}" value="${c.user||''}" style="padding:7px 10px;font-size:12px">
+          </div>
+          <div>
+            <label class="form-label">Senha</label>
+            <input class="form-input" id="ep_${s.id}" value="${c.pass||''}" style="padding:7px 10px;font-size:12px">
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button class="btn btn-primary btn-sm" onclick="salvarFuncionaria('${s.id}')">Salvar</button>
+        <button class="btn btn-danger btn-sm" onclick="removerFuncionaria('${s.id}')">Remover</button>
+      </div>
+    </div>`;
+  }).join('')}`:''}
+</div>
+
+<div class="section-label">Dados do app Mentoria Verus</div>
+<div class="card">
+  <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px">
+    ${APP?`✅ App conectado — ${getMentees().length} mentoradas carregadas.`:'⚠️ App não conectado. Cole os dados abaixo para importar.'}
+  </p>
+  ${!APP?`<div class="form-group">
+    <label class="form-label">Colar dados (JSON do app principal)</label>
+    <textarea class="form-textarea" id="import_data" style="font-family:monospace;font-size:11px;min-height:100px" placeholder='{"mentees":[...],"plans":{...},...}'></textarea>
+  </div>
+  <button class="btn btn-primary btn-sm" onclick="importarApp()">Importar</button>`:''}
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════ GERENTE ACTIONS
+function salvarGerenteCreds(){
+  const nome=document.getElementById('cfg_gNome')?.value?.trim();
+  const user=document.getElementById('cfg_gUser')?.value?.trim();
+  const pass=document.getElementById('cfg_gPass')?.value?.trim();
+  if(!user||!pass){ alert('Preencha usuário e senha.'); return; }
+  if(!CS.credentials) CS.credentials={};
+  CS.credentials.gerente={user,pass,nome:nome||'Gerente'};
+  currentUser.nome=nome||'Gerente';
+  document.getElementById('gerenteUserName').textContent=currentUser.nome;
+  saveCS(); renderGerente();
+  alert('Credenciais da gerente salvas!');
+}
+
+function addFuncionaria(){
+  const nome=document.getElementById('nf_nome')?.value?.trim();
+  const user=document.getElementById('nf_user')?.value?.trim();
+  const pass=document.getElementById('nf_pass')?.value?.trim();
+  if(!nome||!user||!pass){ alert('Preencha todos os campos.'); return; }
+  const id='func'+Date.now();
+  if(!CS.credentials) CS.credentials={};
+  CS.credentials[id]={user,pass,nome};
+  saveCS(); renderGerente();
+}
+
+function salvarFuncionaria(id){
+  const user=document.getElementById('eu_'+id)?.value?.trim();
+  const pass=document.getElementById('ep_'+id)?.value?.trim();
+  if(!user||!pass){ alert('Preencha usuário e senha.'); return; }
+  CS.credentials[id]={...CS.credentials[id],user,pass};
+  saveCS(); renderGerente();
+  alert('Dados salvos!');
+}
+
+function removerFuncionaria(id){
+  if(!confirm('Remover esta funcionária?')) return;
+  delete CS.credentials[id];
+  saveCS(); renderGerente();
+}
+
+function importarApp(){
+  const raw=document.getElementById('import_data')?.value?.trim();
+  if(!raw){ alert('Cole os dados antes de importar.'); return; }
+  try {
+    const parsed=JSON.parse(raw);
+    if(!parsed.mentees){ alert('Dados inválidos.'); return; }
+    localStorage.setItem(APP_KEY, raw);
+    APP=parsed;
+    renderGerente();
+    alert(`✅ ${parsed.mentees.length} mentoradas importadas!`);
+  } catch(e){ alert('Erro ao ler JSON.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════ FUNCIONÁRIA VIEWS
+function funcTab(tab, el){
+  currentFuncTab=tab;
+  document.querySelectorAll('#funcApp .nav-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderFunc();
+}
+
+function renderFunc(){
+  const el=document.getElementById('funcContent');
+  if(currentFuncTab==='rotina') el.innerHTML=renderFuncRotina();
+  else if(currentFuncTab==='mentoradas') el.innerHTML=renderFuncMentoradas();
+  else if(currentFuncTab==='contatos') el.innerHTML=renderFuncContatos();
+}
+
+// ── Rotina ──
+function renderFuncRotina(){
+  const wk=semanaKey();
+  const checks=getCheckSemana(currentUser.id);
+  const done=CHECKLIST.filter(c=>checks[c.id]?.done).length;
+  const total=CHECKLIST.length;
+  const pctDone=Math.round(done/total*100);
+  const color=pctDone===100?'var(--green)':pctDone>=50?'var(--accent)':'var(--amber)';
+  const grupos=[...new Set(CHECKLIST.map(c=>c.grupo))];
+
+  return `
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+  <div class="page-title" style="margin:0">Minha Rotina Semanal</div>
+  <div style="text-align:right">
+    <div style="font-family:'Instrument Serif',serif;font-size:2rem;color:${color};line-height:1">${pctDone}%</div>
+    <div style="font-size:11px;color:var(--text3)">${semanaLabel(wk)}</div>
+  </div>
+</div>
+
+<div class="prog-bar" style="height:10px;margin-bottom:1.5rem">
+  <div class="prog-fill" style="width:${pctDone}%;background:${color}"></div>
+</div>
+
+${pctDone===100?`<div class="alert-box success">🎉 Rotina da semana 100% concluída! A gerente pode ver seu progresso.</div>`:''}
+${pctDone===0?`<div class="alert-box warn">⚡ Inicie sua rotina desta semana. A gerente acompanha em tempo real.</div>`:''}
+
+${grupos.map(grupo=>{
+  const items=CHECKLIST.filter(c=>c.grupo===grupo);
+  const grupoDone=items.filter(c=>checks[c.id]?.done).length;
+  return `<div style="margin-bottom:1.25rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div class="section-label" style="margin:0">${grupo}</div>
+      <div style="font-size:11px;font-weight:700;color:${grupoDone===items.length?'var(--green)':'var(--text3)'}">${grupoDone}/${items.length}</div>
+    </div>
+    <div class="card" style="padding:.875rem 1rem">
+      ${items.map(c=>{
+        const item=checks[c.id];
+        const isDone=!!item?.done;
+        return `<div class="check-item" onclick="toggleCheck('${c.id}')">
+          <div class="check-box ${isDone?'done':''}"></div>
+          <div style="flex:1">
+            <div class="check-text ${isDone?'done':''}">${c.texto}</div>
+            <div class="check-note">${c.nota}</div>
+            ${isDone?`<div class="check-ts">✓ Concluído em ${item.data} às ${item.hora}</div>`:''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}).join('')}
+
+<div class="section-label">Guia rápido de prioridades</div>
+<div class="card">
+  <div style="display:grid;gap:10px">
+    <div style="padding:12px;background:var(--red-bg);border-radius:var(--r-sm);border-left:3px solid var(--red)">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:4px">🔴 Urgente — Agir hoje</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6">3+ ações vencidas ou sem contato há +14 dias. WhatsApp ou ligação. Registrar o contato.</div>
+    </div>
+    <div style="padding:12px;background:var(--amber-bg);border-radius:var(--r-sm);border-left:3px solid var(--amber)">
+      <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:4px">🟡 Monitorar — Esta semana</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6">1–2 ações vencidas, sem contato há +7 dias ou progresso abaixo de 30%. Mensagem de verificação.</div>
+    </div>
+    <div style="padding:12px;background:var(--green-bg);border-radius:var(--r-sm);border-left:3px solid var(--green)">
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">🟢 Em dia — Manter</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6">Sem ações vencidas e contato recente. Mensagem de reconhecimento e incentivo.</div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── Mentoradas ──
+function renderFuncMentoradas(){
+  const mentees=getMentees();
+  if(!mentees.length) return `<div class="page-title">Mentoradas</div><div class="card"><div class="empty">App Mentoria Verus não conectado.</div></div>`;
+
+  const alta=mentees.filter(m=>calcPriority(m)==='high');
+  const media=mentees.filter(m=>calcPriority(m)==='medium');
+  const baixa=mentees.filter(m=>calcPriority(m)==='low');
+
+  const renderGroup=(list,title)=>{
+    if(!list.length) return '';
+    return `<div class="section-label">${title}</div>
+    <div class="card">
+      ${list.map(m=>{
+        const v=vencidas(m.id);
+        const dias=diasDesde(getUltimoContato(m.id));
+        return `<div class="staff-row">
+          ${avatarEl(m)}
+          <div class="staff-info">
+            <div class="staff-name">${m.name}</div>
+            <div class="staff-sub">
+              ${priorityBadge(calcPriority(m))}
+              <span>${pct(m.id)}% concluído</span>
+              ${v.length?`<span style="color:var(--red)">${v.length} vencida${v.length>1?'s':''}</span>`:''}
+              <span style="color:${dias>7?'var(--red)':dias>3?'var(--amber)':'var(--text3)'}">contato: ${dias<999?(dias===0?'hoje':dias+'d atrás'):'nunca'}</span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-accent" onclick="openRegistroFor('${m.id}')">+ Contato</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+  };
+
+  return `<div class="page-title">Mentoradas</div>
+  ${renderGroup(alta,'🔴 Atenção urgente')}
+  ${renderGroup(media,'🟡 Monitorar')}
+  ${renderGroup(baixa,'🟢 Em dia')}`;
+}
+
+// ── Meus contatos ──
+function renderFuncContatos(){
+  const meus=Object.entries(CS.contatos||{}).flatMap(([mid,cs])=>{
+    const m=getMentees().find(x=>x.id===mid);
+    return cs.filter(c=>c.autorId===currentUser.id).map(c=>({...c,mentee:m}));
+  }).sort((a,b)=>b.iso.localeCompare(a.iso));
+
+  return `
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+  <div class="page-title" style="margin:0">Meus Contatos</div>
+  <button class="btn btn-accent btn-sm" onclick="openRegistroContato()">+ Registrar contato</button>
+</div>
+
+<div class="stat-grid">
+  <div class="stat"><div class="stat-val">${meus.length}</div><div class="stat-label">Total</div></div>
+  <div class="stat"><div class="stat-val" style="color:var(--accent)">${meus.filter(c=>c.data===today()).length}</div><div class="stat-label">Hoje</div></div>
+</div>
+
+<div class="card">
+  ${meus.length===0?'<div class="empty">Nenhum contato registrado ainda.</div>':''}
+  ${meus.map(c=>`
+  <div class="contact-row">
+    ${avatarEl(c.mentee,32)}
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-weight:700;font-size:13px">${c.mentee?.name||'?'}</span>
+        <span class="badge badge-gray">${c.tipo}</span>
+        <span style="font-size:11px;color:var(--text3);font-family:monospace">${c.data} às ${c.hora}</span>
+      </div>
+      ${c.nota?`<div style="font-size:13px;color:var(--text2);margin-top:5px;line-height:1.5">${c.nota}</div>`:'<div style="font-size:12px;color:var(--text3);margin-top:3px;font-style:italic">Sem anotações</div>'}
+    </div>
+  </div>`).join('')}
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════ MODAIS
+function openModal(title,body,actions){
+  document.getElementById('modalTitle').innerHTML=title;
+  document.getElementById('modalBody').innerHTML=body;
+  document.getElementById('modalActions').innerHTML=actions;
+  document.getElementById('modalOverlay').classList.add('open');
+  const inp=document.querySelector('#modalBody input, #modalBody textarea');
+  if(inp) setTimeout(()=>inp.focus(),50);
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function openRegistroContato(){
+  const mentees=getMentees();
+  openModal('Registrar contato',
+    `<div class="form-group">
+      <label class="form-label">Mentorada</label>
+      <select class="form-select" id="rc_mid">
+        <option value="">Selecione...</option>
+        ${mentees.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de contato</label>
+      <select class="form-select" id="rc_tipo">
+        <option>WhatsApp</option><option>E-mail</option>
+        <option>Ligação</option><option>Reunião</option><option>Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anotações</label>
+      <textarea class="form-textarea" id="rc_nota" placeholder="O que foi abordado? Retorno da mentorada? Próximo passo..."></textarea>
+    </div>`,
+    `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+     <button class="btn btn-primary" onclick="salvarContato()">Registrar</button>`
+  );
+}
+
+function openRegistroFor(mid){
+  const m=getMentees().find(x=>x.id===mid);
+  openModal(`Registrar contato — ${m?.name||''}`,
+    `<div class="form-group">
+      <label class="form-label">Tipo de contato</label>
+      <select class="form-select" id="rc_tipo">
+        <option>WhatsApp</option><option>E-mail</option>
+        <option>Ligação</option><option>Reunião</option><option>Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anotações</label>
+      <textarea class="form-textarea" id="rc_nota" placeholder="O que foi abordado? Retorno? Próximo passo..."></textarea>
+    </div>`,
+    `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+     <button class="btn btn-primary" onclick="salvarContatoFor('${mid}')">Registrar</button>`
+  );
+}
+
+function salvarContato(){
+  const mid=document.getElementById('rc_mid')?.value;
+  if(!mid){ alert('Selecione a mentorada.'); return; }
+  const tipo=document.getElementById('rc_tipo')?.value||'WhatsApp';
+  const nota=document.getElementById('rc_nota')?.value?.trim()||'';
+  addContato(mid,tipo,nota);
+  closeModal(); renderFunc();
+}
+
+function salvarContatoFor(mid){
+  const tipo=document.getElementById('rc_tipo')?.value||'WhatsApp';
+  const nota=document.getElementById('rc_nota')?.value?.trim()||'';
+  addContato(mid,tipo,nota);
+  closeModal(); renderFunc();
+}
+
+// ═══════════════════════════════════════════════════════════════ INIT
+document.getElementById('modalOverlay').addEventListener('click',e=>{
+  if(e.target===e.currentTarget) closeModal();
+});
+startClock();
+
+// Mostra loading e carrega dados do Supabase
+(function(){
+  const lp = document.getElementById('loginPage');
+  if(lp){
+    lp.innerHTML += '<div id="csLoading" style="position:fixed;inset:0;background:#0B1628;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999"><div style="font-family:serif;font-size:2rem;color:#E8F1FF;letter-spacing:2px">VERUS CS</div><div style="font-size:14px;color:#8BAFD4">Carregando dados...</div><div style="width:36px;height:36px;border:3px solid #1E3A5F;border-top-color:#2D8CFF;border-radius:50%;animation:spin 0.8s linear infinite"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style></div>';
+  }
+  initAppFromSupabase(function(){
+    const loading = document.getElementById('csLoading');
+    if(loading) loading.remove();
+    const u = document.getElementById('loginUser');
+    if(u) u.focus();
+  });
+})();
+</script>
+</body>
+</html>
