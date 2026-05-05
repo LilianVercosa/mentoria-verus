@@ -6,7 +6,7 @@
   ],
   "routes": [
     { "src": "/api/db", "dest": "/api/db.js" },
-    { "src": "/verus-cs-final.html", "dest": "/verus-cs-final.html" },
+    { "src": "/cs", "dest": "/cs.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
