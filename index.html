@@ -533,36 +533,20 @@ body {
 // ── DATA ─────────────────────────────────────────────────────────────────────
 const SEED_VERSION = 'v2025-05-03b';
 
-// ── FIREBASE CONFIG ──────────────────────────────────────────────────────────
+// ── DB CONFIG (proxy local) ───────────────────────────────────────────────────
 const STORAGE_KEY = 'mentoria_app_v1';
-const FB_DB  = 'https://mentoria-verus-default-rtdb.firebaseio.com/app.json';
-const FB_API = 'AIzaSyCIDG-5OWDTHKTCCb_6W709TobDbq0eXWo';
-let fbToken  = null;
 
-async function fbAuth(){
-  if(fbToken) return fbToken;
-  try{
-    const r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FB_API,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({returnSecureToken:true})
-    });
-    const j = await r.json();
-    fbToken = j.idToken;
-    return fbToken;
-  }catch(e){ return null; }
+function fbGet(){
+  return fetch('/api/db')
+    .then(function(r){ return r.json(); });
 }
 
-async function fbGet(){
-  const token = await fbAuth();
-  const url = token ? FB_DB+'?auth='+token : FB_DB;
-  const r = await fetch(url);
-  return r.json();
-}
-
-async function fbPut(data){
-  const token = await fbAuth();
-  const url = token ? FB_DB+'?auth='+token : FB_DB;
-  await fetch(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+function fbPut(data){
+  return fetch('/api/db',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
 }
 
 function showLoadingScreen(){
@@ -623,21 +607,40 @@ function mergeWithSeed(saved){
 
 function loadData(){
   showLoadingScreen();
-  fbGet().then(function(saved){
-    if(!saved || saved._seedVersion !== SEED_VERSION){
+
+  // Carrega localStorage primeiro
+  var localData = null;
+  try{
+    var r = localStorage.getItem(STORAGE_KEY);
+    if(r) localData = JSON.parse(r);
+  }catch(e){}
+
+  fbGet().then(function(cloudData){
+    // Se o cloud tem dados reais (não só init), usa o cloud
+    if(cloudData && cloudData._seedVersion === SEED_VERSION && cloudData.mentees){
+      D = cloudData;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(D));
+    }
+    // Se o local tem dados reais, usa o local e sobe para o cloud
+    else if(localData && localData._seedVersion === SEED_VERSION && localData.mentees){
+      D = localData;
+      saveData(); // sobe para o cloud
+    }
+    // Nenhum tem dados reais, usa o seed
+    else {
       D = JSON.parse(JSON.stringify(seed));
       D._seedVersion = SEED_VERSION;
-      if(saved) mergeWithSeed(saved);
       saveData();
-    } else { D = saved; }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(D));
+    }
     restoreLoginScreen();
-  }).catch(function(){
-    try{
-      const r = localStorage.getItem(STORAGE_KEY);
-      if(r){ const s=JSON.parse(r); if(s._seedVersion!==SEED_VERSION){mergeWithSeed(s);}else D=s; }
-      else { D=JSON.parse(JSON.stringify(seed)); D._seedVersion=SEED_VERSION; }
-    }catch(e){ D=JSON.parse(JSON.stringify(seed)); D._seedVersion=SEED_VERSION; }
+  }).catch(function(e){
+    console.warn('Supabase erro, usando localStorage:', e);
+    if(localData && localData._seedVersion === SEED_VERSION){
+      D = localData;
+    } else {
+      D = JSON.parse(JSON.stringify(seed));
+      D._seedVersion = SEED_VERSION;
+    }
     restoreLoginScreen();
   });
 }
